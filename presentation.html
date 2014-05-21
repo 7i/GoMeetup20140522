@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2010 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Original slides: Marcin Wichary (mwichary@google.com)
+  Modifications: Ernest Delgado (ernestd@google.com)
+                 Alex Russell (slightlyoff@chromium.org)
+
+  landslide modifications: Adam Zapletal (adamzap@gmail.com)
+                           Nicolas Perriault (nperriault@gmail.com)
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Assembly in Go</title>
+    <!-- Styles -->
+    
+    <link rel="stylesheet" media="print" href="file:///usr/local/lib/python2.7/dist-packages/landslide/themes/default/css/print.css">
+    <link rel="stylesheet" media="screen, projection" href="file:///usr/local/lib/python2.7/dist-packages/landslide/themes/default/css/screen.css">
+    
+    
+    <!-- /Styles -->
+    <!-- Javascripts -->
+    
+    <script type="text/javascript" src="file:///usr/local/lib/python2.7/dist-packages/landslide/themes/default/js/slides.js"></script>
+    
+    
+    <!-- /Javascripts -->
+</head>
+<body>
+  <div id="blank"></div>
+  <div class="presentation">
+    <div id="current_presenter_notes">
+      <div id="presenter_note"></div>
+    </div>
+    <div class="slides">
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Assembly in Go</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              1/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Why use Assembly in Go?</h1></header>
+            
+            
+            <section><p>Pros:</p>
+<ul class="simple">
+<li>Speed up computationally intensive functions.</li>
+<li>Access CPU specific instructions or capabilities that are not available otherwise.</li>
+<li>Good way to learn and play around with assembly.</li>
+<li>go vet works on assembly files.</li>
+</ul>
+<p>Cons:</p>
+<ul class="simple">
+<li>Very hard to write bug-free, safe and stable code.</li>
+<li>Binds your code to the CPU architectures you have written assembly for (unless a fallback function written in go is created. More on this later).</li>
+<li>It may breake in the future if go shanges internaly.</li>
+<li>Currently the functions written in assembly will not be inlined like small go functions will.</li>
+<li>It will not be covered by the go tool cover.</li>
+<li>It will not work with go fmt.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              2/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>How it works</h1></header>
+            
+            
+            <section><p>There is no inlining of assembly code in a go file.</p>
+<p>Special names for the assembly files (_386.s, _amd64.s, _arm.s).</p>
+<p>Declare the assembly function in the go code.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              3/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>The assembly function decleration</h1></header>
+            
+            
+            <section><p>Special character for function declerations in the .s files</p>
+<p>Middle dot: · (Unicode code point U+00B7)</p>
+<p>Example:</p>
+<p>TEXT ·Test(SB), 7, $0</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              4/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Before using Assembly in Go</h1></header>
+            
+            
+            <section><p>Have you tried...</p>
+<ul class="simple">
+<li>Identifying what the program is spending most time on by profiling?</li>
+<li>Algoritmic optimizations if it is applicable?</li>
+<li>Minimise the generation of garbage? (conversions from string to byte slice and vice versa etc.)</li>
+<li>Finding a good library that already solved this problem?</li>
+</ul>
+<p>If nothing else works then you can consider rewriting in parts or as a
+whole the computationaly intence function in optimized assembly.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              5/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Before writing Assembly in Go</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Write test cases for every possible variation of input (there are too many pitfalls to do anything else).</li>
+</ul>
+<p>Alignment, Page boundaries, Overflows, Special cases  etc.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              6/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Ok lets start with a basic example</h1></header>
+            
+            
+            <section><p>!python</p>
+<p>import landslide</p>
+<dl class="docutils">
+<dt>class MyMacro(landslide.Macro):</dt>
+<dd><dl class="first last docutils">
+<dt>def process(self, content, source=None):</dt>
+<dd>return content + '&lt;p&gt;plop&lt;/p&gt;', ['plopped_slide']</dd>
+</dl>
+</dd>
+</dl>
+<p>g = landslide.generator.Generator(source='toto.md')
+g.register_macro(MyMacro)
+print g.render()</p>
+<p>package typehack</p>
+<p>// ToByteSlice returns the string s as a []byte. Note that cap in bs is set to the length of s.
+// WARNING! bs uses the same memory as s and has therefore broken the
+// immutability of the string s. This can lead to serious bugs,
+// vulnerabilities or other errors if used incorrectly.
+func ToByteSlice(s string) (bs []byte)</p>
+<p>// ToString returns the []byte bs as a string. Note that the cap value from bs is discarded.
+// WARNING! s uses the same memory as bs and is therfor not Immutable.
+// This can lead to serious bugs, vulnerabilities or other errors if used incorrectly.
+func ToString(bs []byte) (s string)</p>
+<p>// Fallback for not supported architectures
+func toByteSlice(s string) (bs []byte) {</p>
+<blockquote>
+return []byte(s)</blockquote>
+<p>}</p>
+<p>// Fallback for not supported architectures
+func toString(bs []byte) (s string) {</p>
+<blockquote>
+return string(bs)</blockquote>
+<p>}</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Syntax</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Thank you!</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/9
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div id="toc" class="sidebar hidden">
+    <h2>Table of Contents</h2>
+    <table>
+      <caption>Table of Contents</caption>
+      
+      <tr id="toc-row-1">
+        <th><a href="#slide1">Assembly in Go</a></th>
+        <td><a href="#slide1">1</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-2">
+        <th><a href="#slide2">Why use Assembly in Go?</a></th>
+        <td><a href="#slide2">2</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-3">
+        <th><a href="#slide3">How it works</a></th>
+        <td><a href="#slide3">3</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-4">
+        <th><a href="#slide4">The assembly function decleration</a></th>
+        <td><a href="#slide4">4</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-5">
+        <th><a href="#slide5">Before using Assembly in Go</a></th>
+        <td><a href="#slide5">5</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-6">
+        <th><a href="#slide6">Before writing Assembly in Go</a></th>
+        <td><a href="#slide6">6</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-7">
+        <th><a href="#slide7">Ok lets start with a basic example</a></th>
+        <td><a href="#slide7">7</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-8">
+        <th><a href="#slide8">Syntax</a></th>
+        <td><a href="#slide8">8</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-9">
+        <th><a href="#slide9">Thank you!</a></th>
+        <td><a href="#slide9">9</a></td>
+      </tr>
+      
+      
+    </table>
+  </div>
+  
+  <div id="help" class="sidebar hidden">
+    <h2>Help</h2>
+    <table>
+      <caption>Help</caption>
+      <tr>
+        <th>Table of Contents</th>
+        <td>t</td>
+      </tr>
+      <tr>
+        <th>Exposé</th>
+        <td>ESC</td>
+      </tr>
+      <tr>
+        <th>Full screen slides</th>
+        <td>e</td>
+      </tr>
+      <tr>
+        <th>Presenter View</th>
+        <td>p</td>
+      </tr>
+      <tr>
+        <th>Source Files</th>
+        <td>s</td>
+      </tr>
+      <tr>
+        <th>Slide Numbers</th>
+        <td>n</td>
+      </tr>
+      <tr>
+        <th>Toggle screen blanking</th>
+        <td>b</td>
+      </tr>
+      <tr>
+        <th>Show/hide slide context</th>
+        <td>c</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>2</td>
+      </tr>
+      <tr>
+        <th>Help</th>
+        <td>h</td>
+      </tr>
+    </table>
+  </div>
+  <script>main()</script>
+</body>
+</html>
