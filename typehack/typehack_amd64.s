@@ -30,3 +30,4 @@ TEXT ·ToString(SB),7,$0
 	MOVQ AX, s+24(FP)  
 	MOVQ BX, s+32(FP)
 	RET
+MOVQ $0x10, AX

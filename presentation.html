@@ -70,7 +70,7 @@
             </aside>
             
             <aside class="page_number">
-              1/9
+              1/19
             </aside>
           </footer>
         </div>
@@ -96,7 +96,7 @@
 <li>Very hard to write bug-free, safe and stable code.</li>
 <li>Binds your code to the CPU architectures you have written assembly for (unless a fallback function written in go is created. More on this later).</li>
 <li>It may breake in the future if go shanges internaly.</li>
-<li>Currently the functions written in assembly will not be inlined like small go functions will.</li>
+<li>Currently the functions written in assembly will not be inlined like small go functions.</li>
 <li>It will not be covered by the go tool cover.</li>
 <li>It will not work with go fmt.</li>
 </ul></section>
@@ -115,7 +115,7 @@
             </aside>
             
             <aside class="page_number">
-              2/9
+              2/19
             </aside>
           </footer>
         </div>
@@ -147,7 +147,7 @@
             </aside>
             
             <aside class="page_number">
-              3/9
+              3/19
             </aside>
           </footer>
         </div>
@@ -180,7 +180,7 @@
             </aside>
             
             <aside class="page_number">
-              4/9
+              4/19
             </aside>
           </footer>
         </div>
@@ -218,7 +218,7 @@ whole the computationaly intence function in optimized assembly.</p></section>
             </aside>
             
             <aside class="page_number">
-              5/9
+              5/19
             </aside>
           </footer>
         </div>
@@ -251,7 +251,173 @@ whole the computationaly intence function in optimized assembly.</p></section>
             </aside>
             
             <aside class="page_number">
-              6/9
+              6/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Syntax</h1></header>
+            
+            
+            <section><p>[Instruction] [src], [dst]</p>
+<p>Immediate values:</p>
+<ul class="simple">
+<li>MOVQ $1234, AX //; moves 1234 in to AX</li>
+<li>MOVQ $0x12EF, AX //; moves the hex value 0x12EF in to AX</li>
+</ul>
+<p>Size of the operands:</p>
+<ul class="simple">
+<li>MOVQ is a MOV of size Quad word (8 byte)</li>
+<li>MOVL is a MOV of size Double word or Long word (4 byte)</li>
+<li>MOVW is a MOV of size Word (2 byte)</li>
+<li>MOVB is a MOV of size Byte (1 byte)</li>
+</ul>
+<p>Registers:</p>
+<ul class="simple">
+<li>SP, AX, BX, CX, DX, BP, DI, SI, R8-R15</li>
+<li>X0-X15 (XMM registers - 16 byte)</li>
+<li>M0-M7 (MMX registers - 8 byte)</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>More Syntax</h1></header>
+            
+            
+            <section><p>Addressing:</p>
+<ul class="simple">
+<li>AX, (AX), (AX)(BX*4), 10(AX), and 10(AX)(BX*4)</li>
+</ul>
+<p>The offsets from AX can be replaced by offsets from FP or SB to access names:</p>
+<ul class="simple">
+<li>extern+5(SB)(AX*2)</li>
+</ul>
+<p>Examples:</p>
+<p>MOVQ AX, BX //; Move the value of AX in to BX</p>
+<p>MOVQ (AX), BX //; Move 8 bytes from where AX is pointing in to BX</p>
+<p>MOVQ (AX)(BX*4), CX //; Move 8 bytes from where AX + 4*BX is pointing</p>
+<p>MOVQ 10(AX)(BX*4), CX //; Move 8 bytes from where AX + 4*BX + 10 is pointing</p>
+<p>MOVQ asdf+0(FP), AX //; Move the first 8 bytes located at the Frame pointer in to AX.</p>
+<p>//; This is usualy the first argument, or part of the first argument to a function.</p>
+<p>//; asdf in this case is just a lable for conviniance.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>More Documentation and examples</h1></header>
+            
+            
+            <section><p>Docs:</p>
+<p><a class="reference external" href="http://plan9.bell-labs.com/sys/doc/asm.html">http://plan9.bell-labs.com/sys/doc/asm.html</a></p>
+<p><a class="reference external" href="http://golang.org/doc/asm">http://golang.org/doc/asm</a></p>
+<p><a class="reference external" href="http://www.doxsey.net/blog/go-and-assembly/index.htm">http://www.doxsey.net/blog/go-and-assembly/index.htm</a></p>
+<p>Examples (all .s files for the architecture you are interested in):</p>
+<p><a class="reference external" href="http://golang.org/src/pkg/math/">http://golang.org/src/pkg/math/</a></p>
+<p><a class="reference external" href="http://golang.org/src/pkg/runtime/">http://golang.org/src/pkg/runtime/</a></p>
+<p><a class="reference external" href="http://golang.org/src/pkg/crypto/aes/">http://golang.org/src/pkg/crypto/aes/</a></p>
+<p><a class="reference external" href="http://golang.org/src/pkg/crypto/md5/">http://golang.org/src/pkg/crypto/md5/</a></p>
+<p><a class="reference external" href="http://golang.org/src/pkg/crypto/sha1/">http://golang.org/src/pkg/crypto/sha1/</a></p>
+<p><a class="reference external" href="http://golang.org/src/pkg/crypto/rc4/">http://golang.org/src/pkg/crypto/rc4/</a></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Starting Point</h1></header>
+            
+            
+            <section><p>Usually when optimising a function you already have the function written in go,
+if this is the case you can easely get a good starting point for your assembly
+by outputing the compiler generated assembly for the function.</p>
+<p>go tool 6g -S gofile.go</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              10/19
             </aside>
           </footer>
         </div>
@@ -265,38 +431,57 @@ whole the computationaly intence function in optimized assembly.</p></section>
             <header><h1>Ok lets start with a basic example</h1></header>
             
             
-            <section><p>!python</p>
-<p>import landslide</p>
-<dl class="docutils">
-<dt>class MyMacro(landslide.Macro):</dt>
-<dd><dl class="first last docutils">
-<dt>def process(self, content, source=None):</dt>
-<dd>return content + '&lt;p&gt;plop&lt;/p&gt;', ['plopped_slide']</dd>
-</dl>
-</dd>
-</dl>
-<p>g = landslide.generator.Generator(source='toto.md')
-g.register_macro(MyMacro)
-print g.render()</p>
-<p>package typehack</p>
-<p>// ToByteSlice returns the string s as a []byte. Note that cap in bs is set to the length of s.
-// WARNING! bs uses the same memory as s and has therefore broken the
-// immutability of the string s. This can lead to serious bugs,
-// vulnerabilities or other errors if used incorrectly.
-func ToByteSlice(s string) (bs []byte)</p>
-<p>// ToString returns the []byte bs as a string. Note that the cap value from bs is discarded.
-// WARNING! s uses the same memory as bs and is therfor not Immutable.
-// This can lead to serious bugs, vulnerabilities or other errors if used incorrectly.
-func ToString(bs []byte) (s string)</p>
-<p>// Fallback for not supported architectures
-func toByteSlice(s string) (bs []byte) {</p>
-<blockquote>
-return []byte(s)</blockquote>
-<p>}</p>
-<p>// Fallback for not supported architectures
-func toString(bs []byte) (s string) {</p>
-<blockquote>
-return string(bs)</blockquote>
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>typehack.go</h1></header>
+            
+            
+            <section><pre><span class="kn">package</span> <span class="nx">typehack</span>
+
+<span class="c1">// ToByteSlice returns the string s as a []byte. Note that cap in bs is</span>
+<span class="c1">// set to the length of s. WARNING! bs uses the same memory as s and has</span>
+<span class="c1">// therefore broken the immutability of the string s. This can lead to</span>
+<span class="c1">// serious bugs, vulnerabilities or other errors if used incorrectly.</span>
+<span class="kd">func</span> <span class="nx">ToByteSlice</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">bs</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span>
+
+<span class="c1">// ToString returns the []byte bs as a string. Note that the cap value</span>
+<span class="c1">// from bs is discarded. WARNING! s uses the same memory as bs and is</span>
+<span class="c1">// therfor not Immutable. This can lead to serious bugs, vulnerabilities</span>
+<span class="c1">// or other errors if used incorrectly.</span>
+<span class="kd">func</span> <span class="nx">ToString</span><span class="p">(</span><span class="nx">bs</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span>
+
+<span class="c1">// Fallback for not supported architectures</span>
+<span class="kd">func</span> <span class="nx">toByteSlice</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">bs</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// Fallback for not supported architectures</span>
+<span class="kd">func</span> <span class="nx">toString</span><span class="p">(</span><span class="nx">bs</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="nx">bs</span><span class="p">)</span>
+</pre>
 <p>}</p></section>
             
           </div>
@@ -313,7 +498,7 @@ return string(bs)</blockquote>
             </aside>
             
             <aside class="page_number">
-              7/9
+              12/19
             </aside>
           </footer>
         </div>
@@ -324,7 +509,228 @@ return string(bs)</blockquote>
         <div class="slide">
           <div class="inner">
             
-            <header><h1>Syntax</h1></header>
+            <header><h1>example_test.go - ToByteSlice</h1></header>
+            
+            
+            <section><pre><span class="c1">//; func ToByteSlice(s string) (bs []byte)</span>
+<span class="nx">TEXT</span> <span class="err">·</span><span class="nx">ToByteSlice</span><span class="p">(</span><span class="nx">SB</span><span class="p">),</span><span class="mi">7</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+<span class="c1">//       s+0(FP) contains pointer to the s data</span>
+<span class="c1">//       s+8(FP) contains length of s</span>
+<span class="c1">//       bs+16(FP) contains pointer to bs data</span>
+<span class="c1">//       bs+24(FP) contains length of bs</span>
+<span class="c1">//       bs+32(FP) contains cap of bs</span>
+
+<span class="c1">//; Pointer to data in s is moved to bs pointer so that bs now refers to</span>
+<span class="c1">//; the same data.</span>
+       <span class="nx">MOVQ</span> <span class="nx">s</span><span class="o">+</span><span class="mi">0</span><span class="p">(</span><span class="nx">FP</span><span class="p">),</span> <span class="nx">AX</span>
+       <span class="nx">MOVQ</span> <span class="nx">s</span><span class="o">+</span><span class="mi">8</span><span class="p">(</span><span class="nx">FP</span><span class="p">),</span> <span class="nx">BX</span>
+       <span class="nx">MOVQ</span> <span class="nx">AX</span><span class="p">,</span> <span class="nx">bs</span><span class="o">+</span><span class="mi">16</span><span class="p">(</span><span class="nx">FP</span><span class="p">)</span>
+       <span class="nx">MOVQ</span> <span class="nx">BX</span><span class="p">,</span> <span class="nx">bs</span><span class="o">+</span><span class="mi">24</span><span class="p">(</span><span class="nx">FP</span><span class="p">)</span>
+       <span class="nx">MOVQ</span> <span class="nx">BX</span><span class="p">,</span> <span class="nx">bs</span><span class="o">+</span><span class="mi">32</span><span class="p">(</span><span class="nx">FP</span><span class="p">)</span>
+       <span class="nx">RET</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              13/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>example_test.go - ToString</h1></header>
+            
+            
+            <section><pre><span class="c1">//; func ToString(bs []byte) (s string)</span>
+<span class="nx">TEXT</span> <span class="err">·</span><span class="nx">ToString</span><span class="p">(</span><span class="nx">SB</span><span class="p">),</span><span class="mi">7</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+<span class="c1">//       bs+0(FP) contains pointer to the bs data</span>
+<span class="c1">//       bs+8(FP) contains length of bs</span>
+<span class="c1">//       bs+16(FP) contains cap of bs</span>
+<span class="c1">//       s+24(FP) contains pointer to s data</span>
+<span class="c1">//       s+32(FP) contains length of s</span>
+
+<span class="c1">//; Pointer to data in bs is moved to s pointer so that bs now refers to</span>
+<span class="c1">//; the same data.</span>
+       <span class="nx">MOVQ</span> <span class="nx">bs</span><span class="o">+</span><span class="mi">0</span><span class="p">(</span><span class="nx">FP</span><span class="p">),</span> <span class="nx">AX</span>
+       <span class="nx">MOVQ</span> <span class="nx">bs</span><span class="o">+</span><span class="mi">8</span><span class="p">(</span><span class="nx">FP</span><span class="p">),</span> <span class="nx">BX</span>
+       <span class="nx">MOVQ</span> <span class="nx">AX</span><span class="p">,</span> <span class="nx">s</span><span class="o">+</span><span class="mi">24</span><span class="p">(</span><span class="nx">FP</span><span class="p">)</span>
+       <span class="nx">MOVQ</span> <span class="nx">BX</span><span class="p">,</span> <span class="nx">s</span><span class="o">+</span><span class="mi">32</span><span class="p">(</span><span class="nx">FP</span><span class="p">)</span>
+       <span class="nx">RET</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              14/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Side Note</h1></header>
+            
+            
+            <section><p>To get more information on how the internal structure of []byte and strings please visit:</p>
+<p><a class="reference external" href="http://blog.golang.org/go-slices-usage-and-internals">http://blog.golang.org/go-slices-usage-and-internals</a></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              15/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Fallback for 386 and ARM</h1></header>
+            
+            
+            <section><p>typehack_arm.s:</p>
+<pre><span class="c1">//; func ToByteSlice(s string) (bs []byte)</span>
+<span class="nx">TEXT</span> <span class="err">·</span><span class="nx">ToByteSlice</span><span class="p">(</span><span class="nx">SB</span><span class="p">),</span><span class="nx">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+       <span class="nx">B</span> <span class="err">·</span><span class="nx">toByteSlice</span><span class="p">(</span><span class="nx">SB</span><span class="p">)</span>
+
+<span class="c1">//; func ToString(bs []byte) (s string)</span>
+<span class="nx">TEXT</span> <span class="err">·</span><span class="nx">ToString</span><span class="p">(</span><span class="nx">SB</span><span class="p">),</span><span class="nx">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+       <span class="nx">B</span> <span class="err">·</span><span class="nx">toString</span><span class="p">(</span><span class="nx">SB</span><span class="p">)</span>
+</pre>
+<p>typehack_386.s:</p>
+<pre><span class="c1">//; func ToByteSlice(s string) (bs []byte)</span>
+<span class="nx">TEXT</span> <span class="err">·</span><span class="nx">ToByteSlice</span><span class="p">(</span><span class="nx">SB</span><span class="p">),</span><span class="nx">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+       <span class="nx">JMP</span> <span class="err">·</span><span class="nx">toByteSlice</span><span class="p">(</span><span class="nx">SB</span><span class="p">)</span>
+
+<span class="c1">//; func ToString(bs []byte) (s string)</span>
+<span class="nx">TEXT</span> <span class="err">·</span><span class="nx">ToString</span><span class="p">(</span><span class="nx">SB</span><span class="p">),</span><span class="nx">NOSPLIT</span><span class="p">,</span><span class="err">$</span><span class="mi">0</span>
+       <span class="nx">JMP</span> <span class="err">·</span><span class="nx">toString</span><span class="p">(</span><span class="nx">SB</span><span class="p">)</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              16/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>example_test.go</h1></header>
+            
+            
+            <section><pre><span class="kn">package</span> <span class="nx">typehack_test</span>
+
+<span class="kn">import</span> <span class="s">&quot;fmt&quot;</span>
+<span class="kn">import</span> <span class="nx">typehack</span> <span class="s">&quot;.&quot;</span>
+
+<span class="kd">func</span> <span class="nx">ExampleToByteSlice</span><span class="p">()</span> <span class="p">{</span>
+       <span class="nx">s</span> <span class="o">:=</span> <span class="s">&quot;Hello, Gophers!&quot;</span>
+       <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;ToByteSlice:&quot;</span><span class="p">,</span> <span class="nx">typehack</span><span class="p">.</span><span class="nx">ToByteSlice</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span>
+       <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Raw s:&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+<span class="c1">// Output:</span>
+<span class="c1">// ToByteSlice: [72 101 108 108 111 44 32 71 111 112 104 101 114 115 33]</span>
+<span class="c1">// Raw s: Hello, Gophers!</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">ExampleToString</span><span class="p">()</span> <span class="p">{</span>
+       <span class="nx">bs</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;Hello, Gophers!&quot;</span><span class="p">)</span>
+       <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;ToString:&quot;</span><span class="p">,</span> <span class="nx">typehack</span><span class="p">.</span><span class="nx">ToString</span><span class="p">(</span><span class="nx">bs</span><span class="p">))</span>
+       <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Raw bs:&quot;</span><span class="p">,</span> <span class="nx">bs</span><span class="p">)</span>
+<span class="c1">// Output:</span>
+<span class="c1">// ToString: Hello, Gophers!</span>
+<span class="c1">// Raw bs: [72 101 108 108 111 44 32 71 111 112 104 101 114 115 33]</span>
+<span class="p">}</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="GoAsm.rst">GoAsm.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              17/19
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: GoAsm.rst -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Other examples</h1></header>
             
             
           </div>
@@ -341,7 +747,7 @@ return string(bs)</blockquote>
             </aside>
             
             <aside class="page_number">
-              8/9
+              18/19
             </aside>
           </footer>
         </div>
@@ -369,7 +775,7 @@ return string(bs)</blockquote>
             </aside>
             
             <aside class="page_number">
-              9/9
+              19/19
             </aside>
           </footer>
         </div>
@@ -420,20 +826,80 @@ return string(bs)</blockquote>
       
       
       <tr id="toc-row-7">
-        <th><a href="#slide7">Ok lets start with a basic example</a></th>
+        <th><a href="#slide7">Syntax</a></th>
         <td><a href="#slide7">7</a></td>
       </tr>
       
       
       <tr id="toc-row-8">
-        <th><a href="#slide8">Syntax</a></th>
+        <th><a href="#slide8">More Syntax</a></th>
         <td><a href="#slide8">8</a></td>
       </tr>
       
       
       <tr id="toc-row-9">
-        <th><a href="#slide9">Thank you!</a></th>
+        <th><a href="#slide9">More Documentation and examples</a></th>
         <td><a href="#slide9">9</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-10">
+        <th><a href="#slide10">Starting Point</a></th>
+        <td><a href="#slide10">10</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-11">
+        <th><a href="#slide11">Ok lets start with a basic example</a></th>
+        <td><a href="#slide11">11</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-12">
+        <th><a href="#slide12">typehack.go</a></th>
+        <td><a href="#slide12">12</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-13">
+        <th><a href="#slide13">example_test.go - ToByteSlice</a></th>
+        <td><a href="#slide13">13</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-14">
+        <th><a href="#slide14">example_test.go - ToString</a></th>
+        <td><a href="#slide14">14</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-15">
+        <th><a href="#slide15">Side Note</a></th>
+        <td><a href="#slide15">15</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-16">
+        <th><a href="#slide16">Fallback for 386 and ARM</a></th>
+        <td><a href="#slide16">16</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-17">
+        <th><a href="#slide17">example_test.go</a></th>
+        <td><a href="#slide17">17</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-18">
+        <th><a href="#slide18">Other examples</a></th>
+        <td><a href="#slide18">18</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-19">
+        <th><a href="#slide19">Thank you!</a></th>
+        <td><a href="#slide19">19</a></td>
       </tr>
       
       
