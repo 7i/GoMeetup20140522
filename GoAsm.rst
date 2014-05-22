@@ -334,3 +334,9 @@ Other examples
 
 Thank you!
 ==========
+
+Go Stockholm Meetup
+
+23 May 2014
+
+Daniel Lidén
